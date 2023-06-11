@@ -11,6 +11,8 @@
 #define ROWS ( SCREEN_HEIGHT / CELL_SIZE )
 #define COLS ( SCREEN_WIDTH / CELL_SIZE ) 
 
+#define MOD(a,b) ((a % b + b) % b)
+
 typedef enum {
 	CELL_DEAD = 0,
 	CELL_ALIVE = 1,
@@ -45,7 +47,7 @@ int cell_neighbours(Board board, int y, int x)
 	for (int dy = -1; dy <= 1; dy++) {
 		for (int dx = -1; dx <= 1; dx++) {
 			if (dx != 0 || dy != 0) {
-				neighbours += board.cells[(y + dy) % ROWS][(x + dx) % COLS];
+				neighbours += board.cells[MOD((y + dy),ROWS)][MOD((x + dx),COLS)];
 			}
 		}
 	}
