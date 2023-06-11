@@ -60,47 +60,52 @@ int main(void) {
 
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Game of Life");
 
+	int framesCounter = 0;
+	int framesSpeed = 8;
 	SetTargetFPS(60);
 
 	while (!WindowShouldClose()) {
-	BeginDrawing();
+		BeginDrawing();
 		{
-
-		for (int y = 0; y < ROWS; y++) {
-			for (int x = 0; x < COLS; x++) {
-				DrawRectangle(x*CELL_SIZE, y*CELL_SIZE, CELL_SIZE, CELL_SIZE, cell_color[board.cells[y][x]]);
+			for (int y = 0; y < ROWS; y++) {
+				for (int x = 0; x < COLS; x++) {
+					DrawRectangle(x*CELL_SIZE, y*CELL_SIZE, CELL_SIZE, CELL_SIZE, cell_color[board.cells[y][x]]);
+				}
 			}
-		}
 			ClearBackground(BLACK);
 			DrawFPS(10, 10);
 		}
 		EndDrawing();
-		
-		for (int y = 0; y < ROWS; y++) {
-			for (int x = 0; x < COLS; x++) {
-				int neighbours = cell_neighbours(board, y, x);
-				switch (board.cells[y][x]) {
-					case CELL_DEAD:
-						if (neighbours == 3) {
-							next_board.cells[y][x] = CELL_ALIVE;
-						}
-						break;
-					case CELL_ALIVE:
-						if (neighbours == 2 || neighbours == 3) {
-							next_board.cells[y][x] = CELL_ALIVE;
-						} else {
-							next_board.cells[y][x] = CELL_DEAD;
-						}
-						break;
-					default:
-						fprintf(stderr, "ERROR: unreachable");
-						exit(1);
+	
+		framesCounter++;
+
+		if (framesCounter >= (60/framesSpeed)) {
+			for (int y = 0; y < ROWS; y++) {
+				for (int x = 0; x < COLS; x++) {
+					int neighbours = cell_neighbours(board, y, x);
+					switch (board.cells[y][x]) {
+						case CELL_DEAD:
+							if (neighbours == 3) {
+								next_board.cells[y][x] = CELL_ALIVE;
+							}
+							break;
+						case CELL_ALIVE:
+							if (neighbours == 2 || neighbours == 3) {
+								next_board.cells[y][x] = CELL_ALIVE;
+							} else {
+								next_board.cells[y][x] = CELL_DEAD;
+							}
+							break;
+						default:
+							fprintf(stderr, "ERROR: unreachable");
+							exit(1);
+					}
 				}
 			}
-		}
 
-		board = next_board;
-		WaitTime(0.25f);
+			board = next_board;
+			framesCounter = 0;
+		}
 	}
 
 	CloseWindow();
