@@ -80,6 +80,10 @@ int main(void) {
 				}
 			}
 
+			if (IsKeyDown(KEY_F)) {
+				DrawFPS(10,10);
+			}
+
 			if (paused) {
 				DrawText("paused", SCREEN_WIDTH - 100, SCREEN_HEIGHT - 30, 20, RED);
 			}
