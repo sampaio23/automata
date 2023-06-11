@@ -6,7 +6,7 @@
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
-#define CELL_SIZE 20
+#define CELL_SIZE 100
 
 #define ROWS ( SCREEN_HEIGHT / CELL_SIZE )
 #define COLS ( SCREEN_WIDTH / CELL_SIZE ) 
@@ -63,13 +63,26 @@ int main(void) {
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Game of Life");
 
 	int framesCounter = 0;
-	int framesSpeed = 8;
-	bool paused = 0;
+	int framesSpeed = 4;
+	bool paused = false;
+	bool step = false;
 	SetTargetFPS(60);
-	const int paused_text_width = MeasureText("paused", 80);
 
 	while (!WindowShouldClose()) {
 		if (IsKeyPressed(KEY_SPACE)) paused = !paused;
+
+		if (paused) {
+			Vector2 mouse_position = GetMousePosition();
+			int cell_x = mouse_position.x / CELL_SIZE;
+			int cell_y = mouse_position.y / CELL_SIZE;
+			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+				board.cells[cell_y][cell_x] = CELL_ALIVE;
+			} else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+				board.cells[cell_y][cell_x] = CELL_DEAD;
+			}
+
+			if (IsKeyPressed(KEY_ENTER)) step = true;
+		}
 
 		BeginDrawing();
 		{
@@ -80,15 +93,14 @@ int main(void) {
 			}
 
 			if (paused) {
-				DrawText("paused", SCREEN_WIDTH/2 - paused_text_width/2, SCREEN_HEIGHT/2 - 40, 80, RED);
+				DrawText("paused", SCREEN_WIDTH - 100, SCREEN_HEIGHT - 30, 20, RED);
 			}
-			DrawFPS(10, 10);
 		}
 		EndDrawing();
 	
 		framesCounter++;
 
-		if ((framesCounter >= (60/framesSpeed)) && !paused) {
+		if (((framesCounter >= (60/framesSpeed)) && !paused) || step) {
 			for (int y = 0; y < ROWS; y++) {
 				for (int x = 0; x < COLS; x++) {
 					int neighbours = cell_neighbours(board, y, x);
@@ -114,6 +126,7 @@ int main(void) {
 
 			board = next_board;
 			framesCounter = 0;
+			step = false;
 		}
 	}
 
