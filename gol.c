@@ -108,6 +108,8 @@ int main(void) {
 						case CELL_DEAD:
 							if (neighbours == 3) {
 								next_board.cells[y][x] = CELL_ALIVE;
+							} else {
+								next_board.cells[y][x] = CELL_DEAD;
 							}
 							break;
 						case CELL_ALIVE:
@@ -134,3 +136,4 @@ int main(void) {
 
 	return 0;
 }
+
