@@ -6,7 +6,7 @@
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
-#define CELL_SIZE 100
+#define CELL_SIZE 10
 
 #define ROWS ( SCREEN_HEIGHT / CELL_SIZE )
 #define COLS ( SCREEN_WIDTH / CELL_SIZE ) 
@@ -63,26 +63,14 @@ int main(void) {
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Game of Life");
 
 	int framesCounter = 0;
-	int framesSpeed = 4;
-	bool paused = false;
-	bool step = false;
+	int framesSpeed = 8;
 	SetTargetFPS(60);
 
+	bool paused = false;
+	bool step = false;
+
 	while (!WindowShouldClose()) {
-		if (IsKeyPressed(KEY_SPACE)) paused = !paused;
-
-		if (paused) {
-			Vector2 mouse_position = GetMousePosition();
-			int cell_x = mouse_position.x / CELL_SIZE;
-			int cell_y = mouse_position.y / CELL_SIZE;
-			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-				board.cells[cell_y][cell_x] = CELL_ALIVE;
-			} else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-				board.cells[cell_y][cell_x] = CELL_DEAD;
-			}
-
-			if (IsKeyPressed(KEY_ENTER)) step = true;
-		}
+		framesCounter++;
 
 		BeginDrawing();
 		{
@@ -97,8 +85,22 @@ int main(void) {
 			}
 		}
 		EndDrawing();
-	
-		framesCounter++;
+
+		if (IsKeyPressed(KEY_SPACE)) {
+			paused = !paused;
+		}
+		if (paused) {
+			Vector2 mouse_position = GetMousePosition();
+			int cell_x = mouse_position.x / CELL_SIZE;
+			int cell_y = mouse_position.y / CELL_SIZE;
+			if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+				board.cells[cell_y][cell_x] = CELL_ALIVE;
+			} else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+				board.cells[cell_y][cell_x] = CELL_DEAD;
+			}
+
+			if (IsKeyPressed(KEY_ENTER)) step = true;
+		}
 
 		if (((framesCounter >= (60/framesSpeed)) && !paused) || step) {
 			for (int y = 0; y < ROWS; y++) {
