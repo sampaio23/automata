@@ -6,7 +6,7 @@
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
-#define CELL_SIZE 50
+#define CELL_SIZE 20
 
 #define ROWS ( SCREEN_HEIGHT / CELL_SIZE )
 #define COLS ( SCREEN_WIDTH / CELL_SIZE ) 
@@ -62,9 +62,13 @@ int main(void) {
 
 	int framesCounter = 0;
 	int framesSpeed = 8;
+	bool paused = 0;
 	SetTargetFPS(60);
+	const int paused_text_width = MeasureText("paused", 80);
 
 	while (!WindowShouldClose()) {
+		if (IsKeyPressed(KEY_SPACE)) paused = !paused;
+
 		BeginDrawing();
 		{
 			for (int y = 0; y < ROWS; y++) {
@@ -72,14 +76,17 @@ int main(void) {
 					DrawRectangle(x*CELL_SIZE, y*CELL_SIZE, CELL_SIZE, CELL_SIZE, cell_color[board.cells[y][x]]);
 				}
 			}
-			ClearBackground(BLACK);
+
+			if (paused) {
+				DrawText("paused", SCREEN_WIDTH/2 - paused_text_width/2, SCREEN_HEIGHT/2 - 40, 80, RED);
+			}
 			DrawFPS(10, 10);
 		}
 		EndDrawing();
 	
 		framesCounter++;
 
-		if (framesCounter >= (60/framesSpeed)) {
+		if ((framesCounter >= (60/framesSpeed)) && !paused) {
 			for (int y = 0; y < ROWS; y++) {
 				for (int x = 0; x < COLS; x++) {
 					int neighbours = cell_neighbours(board, y, x);
