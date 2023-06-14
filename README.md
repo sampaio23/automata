@@ -1,6 +1,6 @@
 # Automata
 
-A simple implementation of [Conway's Game of Life]() using C and [raylib]().
+A simple implementation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) using C and [raylib](https://www.raylib.com/).
 
 ![gol](./images/gol.gif)
 
